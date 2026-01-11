@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# UrlShortener CLI for Linux/WSL/macOS
+
+# Find project root relative to this script
+PROJECT_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+JAR_FILE="$PROJECT_ROOT/build/libs/url-shortener-1.0.0.jar"
+
+if [ ! -f "$JAR_FILE" ]; then
+    echo "Error: JAR file not found at $JAR_FILE"
+    echo "Please run: ./gradlew build"
+    exit 1
+fi
+
+java -jar "$JAR_FILE" "$@"
