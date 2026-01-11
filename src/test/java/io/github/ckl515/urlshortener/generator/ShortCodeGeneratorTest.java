@@ -43,8 +43,9 @@ class ShortCodeGeneratorTest {
 
     @Test
     void generateUsesOnlyValidCharacters() {
-        String code = generator.generate();
-
-        assertTrue(code.matches("[a-zA-Z0-9]+"));
+        for (int i = 0; i < 100; i++) {
+            String code = generator.generate();
+            assertTrue(code.matches("[a-zA-Z0-9]+"));
+        }
     }
 }
