@@ -32,20 +32,24 @@ class ShortCodeGeneratorTest {
 
     @Test
     void generateCreatesUniqueCodes() {
-        Set<String> codes = new HashSet<>();
-
-        for (int i = 0; i < 100; i++) {
-            codes.add(generator.generate());
-        }
+        Set<String> codes = generateCodes(100);
 
         assertEquals(100, codes.size());
     }
 
     @Test
     void generateUsesOnlyValidCharacters() {
-        for (int i = 0; i < 100; i++) {
-            String code = generator.generate();
+        Set<String> codes = generateCodes(100);
+        for (String code : codes) {
             assertTrue(code.matches("[a-zA-Z0-9]+"));
         }
+    }
+
+    private Set<String> generateCodes(int count) {
+        Set<String> codes = new HashSet<>();
+        for (int i = 0; i < count; i++) {
+            codes.add(generator.generate());
+        }
+        return codes;
     }
 }
