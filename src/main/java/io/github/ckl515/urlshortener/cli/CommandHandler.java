@@ -35,6 +35,9 @@ public class CommandHandler {
                 case "list":
                     handleList();
                     break;
+                case "stats":
+                    handleStats(args);
+                    break;
                 default:
                     System.err.println("Unknown command: " + command);
                     logger.warn("Unknown command: {}", command);
@@ -86,10 +89,24 @@ public class CommandHandler {
         }
     }
 
+    private void handleStats(String[] args) {
+        if (args.length < 2) {
+            System.err.println("Usage: stats <shortCode>");
+            return;
+        }
+        String shortCode = args[1];
+        ShortenedUrl url = service.get(shortCode);
+        System.out.println("Short Code: " + url.getShortCode());
+        System.out.println("Original URL: " + url.getOriginalUrl());
+        System.out.println("Click Count: " + url.getAccessCount());
+        System.out.println("Created At: " + url.getCreatedAt());
+    }
+
     private void printUsage() {
         System.out.println("URL Shortener - Usage:");
         System.out.println("    shorten <url>       - Shorten a URL");
         System.out.println("    get <shortCode>     - Get original URL");
         System.out.println("    list                - List all URLs");
+        System.out.println("    stats <short code>  - Show statistics");
     }
 }

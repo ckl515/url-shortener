@@ -1,14 +1,23 @@
 package io.github.ckl515.urlshortener.model;
 
+import java.time.Instant;
 import java.util.Objects;
 
 public class ShortenedUrl {
     private final String shortCode;
     private final String originalUrl;
+    private final Instant createdAt;
+    private long accessCount;
 
     public ShortenedUrl(String shortCode, String originalUrl) {
         this.shortCode = Objects.requireNonNull(shortCode, "Short code cannot be null");
         this.originalUrl = Objects.requireNonNull(originalUrl, "Original URL cannot be null");
+        this.createdAt = Instant.now();
+        this.accessCount  = 0;
+    }
+
+    public void incrementAccessCount() {
+        this.accessCount++;
     }
 
     public String getShortCode() {
@@ -17,6 +26,14 @@ public class ShortenedUrl {
 
     public String getOriginalUrl() {
         return originalUrl;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public long getAccessCount() {
+        return accessCount;
     }
 
     @Override
