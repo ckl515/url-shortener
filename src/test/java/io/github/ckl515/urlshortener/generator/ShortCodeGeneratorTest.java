@@ -1,5 +1,6 @@
 package io.github.ckl515.urlshortener.generator;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,7 +8,12 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShortCodeGeneratorTest {
-    ShortCodeGenerator generator = new ShortCodeGenerator();
+    ShortCodeGenerator generator;
+
+    @BeforeEach
+    void setUp() {
+        generator = new ShortCodeGenerator();
+    }
 
     @Test
     void generateCreatesNonEmptyCode() {
