@@ -32,6 +32,7 @@ public class UrlShortenerService {
         ShortenedUrl url = repository.findByShortCode(shortCode)
                 .orElseThrow(() -> new IllegalArgumentException("Short code not found: " + shortCode));
 
+        url.incrementAccessCount();
         logger.info("Retrieved URL: {}", shortCode);
         return url;
     }

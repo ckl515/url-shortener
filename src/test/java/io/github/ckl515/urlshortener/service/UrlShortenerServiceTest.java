@@ -69,4 +69,35 @@ class UrlShortenerServiceTest {
 
         assertNotEquals(code1, code2);
     }
+
+    @Test
+    void getIncrementsAccessCount() {
+        String shortCode = service.shorten("https://www.example.com");
+
+        service.get(shortCode);
+        service.get(shortCode);
+        ShortenedUrl url = service.get(shortCode);
+
+        assertEquals(3, url.getAccessCount());
+    }
+
+    @Test
+    void getMultipleAccessesTracksCorrectly() {
+        String shortCode = service.shorten("https://www.example.com");
+
+        ShortenedUrl url1 = service.get(shortCode);
+        assertEquals(1, url1.getAccessCount());
+
+        ShortenedUrl url2 = service.get(shortCode);
+        assertEquals(2, url2.getAccessCount());
+    }
+
+    @Test
+    void shortenNewUrlStartsWithZeroCount() {
+        String shortCode = service.shorten("https://www.example.com");
+        ShortenedUrl url = service.get(shortCode);
+
+        // First get increments to 1
+        assertEquals(1, url.getAccessCount());
+    }
 }
