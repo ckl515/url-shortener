@@ -2,12 +2,40 @@
 
 Command-line URL shortener built with Java 17 and Gradle.
 
-## How to Compile
+## Quick Start
+
+### Mac/Linux/WSL
 ```bash
+# Clone the repository
+git clone https://github.com/ckl515/url-shortener.git
+cd url-shortener
+
+# Build the project
 ./gradlew build
+
+# Make script executable (first time only)
+chmod +x UrlShortener
+
+# Run in interactive mode
+./UrlShortener
 ```
 
+### Windows
+```powershell
+# Clone the repository
+git clone https://github.com/ckl515/url-shortener.git
+
+# Navigate to project directory
+cd url-shortener
+
+# Build the project
+.\gradlew.bat build
+
+# Run in interactive mode
+.\UrlShortener.bat
+```
 ## How to Run
+**Note:** Windows users should replace `./UrlShortener` with `.\UrlShortener.bat` in all examples below.
 
 ### Interactive Mode (Recommended)
 ```bash
@@ -119,6 +147,31 @@ SLF4J + Logback instead of `System.out.println` for better and more professional
 ```
 
 40+ tests covering short code generation, URL validation, repository operations and service integration. Uses real objects instead of mocks since all dependencies are lightweight and deterministic.
+
+## Troubleshooting
+
+**"gradlew.bat is not recognized"** (Windows)
+- Make sure you're in the project directory: `cd url-shortener`
+- Verify files exist: `dir` should show `gradlew.bat`
+
+**"Permission denied"** (Mac/Linux)
+- Run: `chmod +x UrlShortener`
+- Or use JAR directly: `java -jar build/libs/url-shortener-1.0.0.jar`
+
+**"JAR file not found"**
+- Build first: `./gradlew build` (Mac/Linux) or `.\gradlew.bat build` (Windows)
+
+**"java: command not found"** or **"JAVA_HOME is not set"**
+- Install Java 17 or higher
+- Verify: `java -version` should show version 17+
+- Set JAVA_HOME if needed:
+  - Mac/Linux: `export JAVA_HOME=$(/usr/libexec/java_home -v 17)` (add to ~/.bashrc)
+  - Windows: System Properties → Environment Variables → New → JAVA_HOME → `C:\Program Files\Java\jdk-17`
+
+**"Short code not found" after shortening**
+- This is expected! In the current version, each command runs a new process with fresh memory
+- Solution: Use interactive mode (`./UrlShortener`) to keep data during session
+- See "Interactive Mode" section above
 
 ## Technical Details
 
