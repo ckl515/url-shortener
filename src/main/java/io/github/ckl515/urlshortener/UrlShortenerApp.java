@@ -5,6 +5,7 @@ import io.github.ckl515.urlshortener.generator.ShortCodeGenerator;
 import io.github.ckl515.urlshortener.repository.InMemoryUrlRepository;
 import io.github.ckl515.urlshortener.repository.UrlRepository;
 import io.github.ckl515.urlshortener.service.UrlShortenerService;
+import io.github.ckl515.urlshortener.validator.UrlValidator;
 
 import java.util.Scanner;
 
@@ -12,11 +13,16 @@ public class UrlShortenerApp {
     public static void main(String[] args) {
         UrlRepository repository = new InMemoryUrlRepository();
         ShortCodeGenerator codeGenerator = new ShortCodeGenerator();
-        UrlShortenerService service = new UrlShortenerService(repository, codeGenerator);
+        UrlValidator urlValidator = new UrlValidator();
+        UrlShortenerService service = new UrlShortenerService(
+                repository,
+                codeGenerator,
+                urlValidator
+        );
         CommandHandler commandHandler = new CommandHandler(service);
 
         if (args.length == 0) {
-            // Interactive mode
+            // Interactive mode (to use get and stats without persistent external storage)
             runInteractiveMode(commandHandler);
         } else {
             // Single command mode

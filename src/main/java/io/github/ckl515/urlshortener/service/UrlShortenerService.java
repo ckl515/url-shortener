@@ -3,6 +3,7 @@ package io.github.ckl515.urlshortener.service;
 import io.github.ckl515.urlshortener.generator.ShortCodeGenerator;
 import io.github.ckl515.urlshortener.model.ShortenedUrl;
 import io.github.ckl515.urlshortener.repository.UrlRepository;
+import io.github.ckl515.urlshortener.validator.UrlValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,21 +15,29 @@ public class UrlShortenerService {
 
     private final UrlRepository repository;
     private final ShortCodeGenerator codeGenerator;
+    private final UrlValidator urlValidator;
 
-    public UrlShortenerService(UrlRepository repository, ShortCodeGenerator codeGenerator) {
+    public UrlShortenerService(UrlRepository repository, 
+                               ShortCodeGenerator codeGenerator,
+                               UrlValidator urlValidator) {
         this.repository = repository;
         this.codeGenerator = codeGenerator;
+        this.urlValidator = urlValidator;
     }
 
     public String shorten(String originalUrl) {
+        urlValidator.validate(originalUrl);
+
         String shortCode = generateUniqueCode();
         ShortenedUrl url = new ShortenedUrl(shortCode, originalUrl);
         repository.save(url);
+
         logger.info("Shortened URL: {} -> {}", shortCode, originalUrl);
         return shortCode;
     }
 
     public String shorten(String originalUrl, String customCode) {
+        urlValidator.validate(originalUrl);
         validateCustomCode(customCode);
 
         if (repository.exists(customCode)) {

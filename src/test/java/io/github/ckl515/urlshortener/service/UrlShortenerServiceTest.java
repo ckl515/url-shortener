@@ -3,6 +3,7 @@ package io.github.ckl515.urlshortener.service;
 import io.github.ckl515.urlshortener.generator.ShortCodeGenerator;
 import io.github.ckl515.urlshortener.model.ShortenedUrl;
 import io.github.ckl515.urlshortener.repository.InMemoryUrlRepository;
+import io.github.ckl515.urlshortener.validator.UrlValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,8 @@ class UrlShortenerServiceTest {
     void setUp() {
         service = new UrlShortenerService(
                 new InMemoryUrlRepository(),
-                new ShortCodeGenerator()
+                new ShortCodeGenerator(),
+                new UrlValidator()
         );
     }
 
@@ -35,6 +37,11 @@ class UrlShortenerServiceTest {
         return service.get(code);
     }
 
+    private void assertInvalidShorten(String url) {
+        assertThrows(IllegalArgumentException.class,
+                () -> shortenUrl(url));
+    }
+
     @Test
     void listAllReturnsEmpty() {
         Collection<ShortenedUrl> urls = service.listAll();
@@ -48,7 +55,28 @@ class UrlShortenerServiceTest {
         assertTrue(exception.getMessage().contains("not found"));
     }
 
-    // tests with preloaded URL
+    @Test
+    void shortenInvalidUrlThrowsException() {
+        assertInvalidShorten("not-a-url");
+    }
+
+    @Test
+    void shortenFtpUrlThrowsException() {
+        assertInvalidShorten("ftp://example.com");
+    }
+
+    @Test
+    void shortenNoProtocolThrowsException() {
+        assertInvalidShorten("example.com");
+    }
+
+    @Test
+    void shortenValidUrlWithPathSucceeds() {
+        String code = shortenUrl("https://example.com/path/to/page");
+        assertNotNull(code);
+    }
+
+    // tests with preloaded example URL
     @Nested
     class WithExampleUrl {
         private String exampleUrl;
