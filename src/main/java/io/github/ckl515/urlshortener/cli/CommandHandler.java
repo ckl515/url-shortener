@@ -54,12 +54,18 @@ public class CommandHandler {
 
     private void handleShorten(String[] args) {
         if (args.length < 2) {
-            System.err.println("Usage: shorten <url>");
+            System.err.println("Usage: shorten <url> [--custom <code>]");
             return;
         }
 
         String url = args[1];
-        String shortCode = service.shorten(url);
+        String shortCode;
+
+        if (args.length >= 4 && "--custom".equals(args[2])) {
+            shortCode = service.shorten(url, args[3]);
+        } else {
+            shortCode = service.shorten(url);
+        }
 
         System.out.println("Shortened URL: " + shortCode);
     }
@@ -104,9 +110,10 @@ public class CommandHandler {
 
     private void printUsage() {
         System.out.println("URL Shortener - Usage:");
-        System.out.println("    shorten <url>       - Shorten a URL");
-        System.out.println("    get <shortCode>     - Get original URL");
-        System.out.println("    list                - List all URLs");
-        System.out.println("    stats <short code>  - Show statistics");
+        System.out.println("    shorten <url>                   - Shorten a URL");
+        System.out.println("    shorten <url> --custom <code>   - Shorten with custom code");
+        System.out.println("    get <shortCode>                 - Get original URL");
+        System.out.println("    list                            - List all URLs");
+        System.out.println("    stats <short code>              - Show statistics");
     }
 }
