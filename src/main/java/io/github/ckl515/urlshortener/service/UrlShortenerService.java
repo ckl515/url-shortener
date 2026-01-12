@@ -42,11 +42,15 @@ public class UrlShortenerService {
     }
 
     public ShortenedUrl get(String shortCode) {
-        ShortenedUrl url = repository.findByShortCode(shortCode)
-                .orElseThrow(() -> new IllegalArgumentException("Short code not found: " + shortCode));
-
+        ShortenedUrl url = findShortenedUrl(shortCode);
         url.incrementAccessCount();
         logger.info("Retrieved URL: {}", shortCode);
+        return url;
+    }
+
+    public ShortenedUrl getStats(String shortCode) {
+        ShortenedUrl url = findShortenedUrl(shortCode);
+        logger.debug("Retrieved stats for: {}", shortCode);
         return url;
     }
 
@@ -77,5 +81,11 @@ public class UrlShortenerService {
         if (!code.matches("[a-zA-Z0-9]+")) {
             throw new IllegalArgumentException("Custom code can only contain letters and numbers");
         }
+    }
+
+    // Finds the ShortenedUrl by the short code, if not throw exception
+    private ShortenedUrl findShortenedUrl(String code) {
+        return repository.findByShortCode(code)
+                .orElseThrow(() -> new IllegalArgumentException("Short code not found: " + code));
     }
 }

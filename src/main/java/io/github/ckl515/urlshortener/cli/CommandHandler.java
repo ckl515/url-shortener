@@ -101,7 +101,7 @@ public class CommandHandler {
             return;
         }
         String shortCode = args[1];
-        ShortenedUrl url = service.get(shortCode);
+        ShortenedUrl url = service.getStats(shortCode);
         System.out.println("Short Code: " + url.getShortCode());
         System.out.println("Original URL: " + url.getOriginalUrl());
         System.out.println("Click Count: " + url.getAccessCount());
