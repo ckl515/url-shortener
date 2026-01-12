@@ -42,6 +42,11 @@ class UrlShortenerServiceTest {
                 () -> shortenUrl(url));
     }
 
+    private void assertInvalidShorten(String url, String customCode) {
+        assertThrows(IllegalArgumentException.class,
+                () -> shortenUrl(url, customCode));
+    }
+
     @Test
     void listAllReturnsEmpty() {
         Collection<ShortenedUrl> urls = service.listAll();
@@ -151,27 +156,23 @@ class UrlShortenerServiceTest {
             @Test
             void duplicateCustomCodeThrowsException() {
                 shortenUrl(exampleUrl, customCode);
-                assertThrows(IllegalArgumentException.class,
-                        () -> shortenUrl("https://www.other.com", customCode));
+                assertInvalidShorten("https://www.other.com", customCode);
             }
 
             @Test
             void invalidCustomCodeThrowsException() {
-                assertThrows(IllegalArgumentException.class,
-                        () -> shortenUrl("https://example.com", "my Link")); // space invalid
+                assertInvalidShorten("https://example.com", "my Link"); // space invalid
             }
 
             @Test
             void emptyCustomCodeThrowsException() {
-                assertThrows(IllegalArgumentException.class,
-                        () -> shortenUrl("https://example.com", ""));
+                assertInvalidShorten("https://example.com", "");
             }
 
             @Test
             void tooLongCustomCodeThrowsException() {
                 String longCode = "a".repeat(10);
-                assertThrows(IllegalArgumentException.class,
-                        () -> shortenUrl("https://example.com", longCode));
+                assertInvalidShorten("https://example.com", longCode);
             }
         }
     }
