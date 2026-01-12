@@ -27,6 +27,10 @@ class UrlShortenerServiceTest {
         return service.shorten(url);
     }
 
+    private String shortenUrl(String url, String customCode) {
+        return service.shorten(url, customCode);
+    }
+
     private ShortenedUrl getUrl(String code) {
         return service.get(code);
     }
@@ -104,6 +108,43 @@ class UrlShortenerServiceTest {
         void shortenNewUrlStartsWithZeroCount() {
             ShortenedUrl url = getUrl(exampleShortCode);
             assertEquals(1, url.getAccessCount()); // first get increments to 1
+        }
+
+        @Nested
+        class CustomCodeTests {
+            private final String customCode = "myLink";
+
+            @Test
+            void customCodeUsesProvidedCode() {
+                String code = shortenUrl(exampleUrl, customCode);
+                assertEquals(customCode, code);
+            }
+
+            @Test
+            void duplicateCustomCodeThrowsException() {
+                shortenUrl(exampleUrl, customCode);
+                assertThrows(IllegalArgumentException.class,
+                        () -> shortenUrl("https://www.other.com", customCode));
+            }
+
+            @Test
+            void invalidCustomCodeThrowsException() {
+                assertThrows(IllegalArgumentException.class,
+                        () -> shortenUrl("https://example.com", "my Link")); // space invalid
+            }
+
+            @Test
+            void emptyCustomCodeThrowsException() {
+                assertThrows(IllegalArgumentException.class,
+                        () -> shortenUrl("https://example.com", ""));
+            }
+
+            @Test
+            void tooLongCustomCodeThrowsException() {
+                String longCode = "a".repeat(10);
+                assertThrows(IllegalArgumentException.class,
+                        () -> shortenUrl("https://example.com", longCode));
+            }
         }
     }
 }

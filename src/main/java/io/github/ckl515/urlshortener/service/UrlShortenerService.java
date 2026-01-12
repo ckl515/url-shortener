@@ -28,6 +28,19 @@ public class UrlShortenerService {
         return shortCode;
     }
 
+    public String shorten(String originalUrl, String customCode) {
+        validateCustomCode(customCode);
+
+        if (repository.exists(customCode)) {
+            throw new IllegalArgumentException("Custom code '" + customCode + "' is already in use");
+        }
+
+        ShortenedUrl url = new ShortenedUrl(customCode, originalUrl);
+        repository.save(url);
+        logger.info("Shortened URL with custom code: {} -> {}", customCode, originalUrl);
+        return customCode;
+    }
+
     public ShortenedUrl get(String shortCode) {
         ShortenedUrl url = repository.findByShortCode(shortCode)
                 .orElseThrow(() -> new IllegalArgumentException("Short code not found: " + shortCode));
@@ -51,5 +64,18 @@ public class UrlShortenerService {
                     code, attempt + 1, MAX_COLLISION_ATTEMPTS);
         }
         throw new RuntimeException("Failed to generate unique code after " + MAX_COLLISION_ATTEMPTS);
+    }
+
+    // Validates that custom code is composed of only valid characters
+    private void validateCustomCode(String code) {
+        if (code == null || code.trim().isEmpty()) {
+            throw new IllegalArgumentException("Custom code cannot be empty");
+        }
+        if (code.length() > 6) {
+            throw new IllegalArgumentException("Custom code too long (max 6 characters)");
+        }
+        if (!code.matches("[a-zA-Z0-9]+")) {
+            throw new IllegalArgumentException("Custom code can only contain letters and numbers");
+        }
     }
 }
